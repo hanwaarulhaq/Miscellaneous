@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cric API</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body class="p-5">
+  <script>
+    const settings = {
+      async: true,
+      crossDomain: true,
+      url: '',
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': 'Your API Key',
+        'X-RapidAPI-Host': 'unofficial-cricbuzz.p.rapidapi.com'
+      }
+    };
+
+    function getSeries() {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/series/list?matchType=international';
+      $.ajax(settings)
+        .done(function (response) {
+          console.log(response);
+        });
+    }
+    function getSchedules() {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-schedules?matchType=international';
+      $.ajax(settings)
+        .done(function (response) {
+          console.log(response);
+        });
+    }
+
+    function getMatchList() {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/list?matchState=recent';
+      $.ajax(settings)
+        .done(function (response) {
+          console.log(response);
+        });
+    }
+
+    function getTeamsList(matchId) {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-team?matchId=' + matchId;
+      $.ajax(settings)
+        .done(function (response) {
+          console.log(response);
+        });
+    }
+
+    function getScorecard(matchId) {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-scorecard?matchId=' + matchId;
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+    }
+    function getInfo(matchId) {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-info?matchId=' + matchId;
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+    }
+    function getMatchScore(matchId) {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-scorecard?matchId=' + matchId;
+      setInterval(function () {
+        $.ajax(settings).done(function (response) {
+          var score = response.scorecard[0].score;
+          var wickets = response.scorecard[0].wickets;
+          var runrate = response.scorecard[0].runRate;
+          var overs = response.scorecard[0].overs;
+          var team = response.scorecard[0].batTeamSName;
+          $('title').text(team + ' ' + score + '/' + wickets + ' (Ovs ' + overs + ') RR:' + runrate)
+        });
+      }, 5000);
+    }
+    function getCommentaries(matchId) {
+      settings.url = 'https://unofficial-cricbuzz.p.rapidapi.com/matches/get-commentaries?matchId=' + matchId;
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+    }
+  </script>
+</body>
+
+</html>
