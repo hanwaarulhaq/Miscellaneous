@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>VirusTotal File Scanner</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <h1>VirusTotal File Scanner</h1>
+  <form id="file-upload-form">
+    <input type="file" name="file" />
+    <input type="submit" value="Scan" />
+  </form>
+  <div id="result-div"></div>
+  <script>
+    $(document).ready(function () {
+      $("#file-upload-form").submit(function (event) {
+        event.preventDefault();
+
+        // Get the file from the form.
+        var file = event.target.elements["file"].files[0];
+
+        // Call the VirusTotal API to scan the file.
+        $.ajax({
+          url: "https://www.virustotal.com/api/v3/files",
+          method: "POST",
+          headers: {
+            "x-apikey": "PUT YOUR KEY HERE"
+          },
+          data: new FormData(event.target),
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            // The scan was successful.
+            // Parse the JSON response.
+            var scanResults = response;//JSON.parse(response);
+            console.log('calling doScan');
+            doScan(scanResults.data.links.self)
+            // Check the scan results for detections.
+            // if (scanResults.data.scans.any(scan => scan.result !== "Clean")) {
+            //   // The file is infected.
+            //   alert("The file is infected.");
+            // } else {
+            //   // The file is clean.
+            //   alert("The file is clean.");
+            // }
+          },
+          error: function (error) {
+            // The scan failed.
+            alert("The scan failed.");
+          }
+        });
+      });
+    });
+    function doScan(url) {
+      $.ajax({
+        url: url,
+        method: "GET",
+        headers: {
+          "x-apikey": "8033c59af33181ded17c94b2d7012684e26d3fbedfd352267714401e2a9d9eef"
+        },
+        //data: new FormData(event.target),
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          // The scan was successful.
+          // Parse the JSON response.
+          var scanResults = response;//JSON.parse(response);
+          console.log('printing results');
+          var objects = scanResults.data.attributes.results;
+          if(jQuery.isEmptyObject(objects)){
+            alert('Scan results are unknown');
+          }
+          console.log(objects);
+          var resultDiv = document.getElementById("result-div");
+          resultDiv.innerHTML = '';
+          
+          for (var objectName in objects) {
+            // Create a new heading element.
+            var heading = document.createElement("h5");
+
+            // Set the text of the heading element.
+            heading.textContent = objectName;
+
+            // Append the heading element to the div element.
+            resultDiv.appendChild(heading);
+
+            // Get the object for the current object name.
+            var object = objects[objectName];
+
+            // Iterate over the properties of the object.
+
+             // Create a new paragraph element.
+             var paragraph = document.createElement("p");
+            for (var propertyName in object) {
+              // Set the text of the paragraph element.
+              paragraph.textContent =paragraph.textContent + propertyName + ": " + object[propertyName]+', ';
+              
+            }
+            // Append the paragraph element to the div element.
+            resultDiv.appendChild(paragraph);
+          }
+        },
+        error: function (error) {
+          // The scan failed.
+          alert("The Virus Scan failed.");
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
